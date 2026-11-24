@@ -1,0 +1,3872 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Delightex Edu | 3D Explorer</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+ --purple:#5E48C4;
+ --deep:#39298E;
+ --pale:#EAE7FE;
+ --yellow:#FFD071;
+ --cyan:#59E4FB;
+ --coral:#ED5661;
+ --ink:#202033;
+ --muted:#68677C;
+ --green:#17865C;
+}
+*{box-sizing:border-box}
+body{
+ margin:0;
+ background:#F5F4FF;
+ color:var(--ink);
+ font-family:Poppins,sans-serif;
+}
+button{font:inherit;cursor:pointer;border:0}
+button:focus-visible{
+ outline:3px solid var(--cyan);
+ outline-offset:3px;
+}
+header{
+ height:64px;
+ background:var(--purple);
+ color:white;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ padding:8px 24px;
+}
+.brand{
+ display:flex;
+ align-items:center;
+ gap:12px;
+ font-weight:800;
+}
+.logo{
+ background:var(--yellow);
+ color:var(--ink);
+ padding:7px 13px;
+ border-radius:20px;
+ font-size:12px;
+}
+.counter{
+ background:var(--deep);
+ color:var(--yellow);
+ padding:7px 13px;
+ border-radius:12px;
+ font-weight:800;
+}
+main{
+ height:calc(100dvh - 134px);
+ padding:12px;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+}
+.slide{
+ display:none;
+ width:min(1160px,100%);
+ height:100%;
+ overflow-y:auto;
+ background:white;
+ border:3px solid var(--pale);
+ border-radius:24px;
+ padding:23px 27px;
+ box-shadow:0 12px 30px #352c8d13;
+}
+.slide.active{
+ display:block;
+ animation:enter .35s ease;
+}
+@keyframes enter{
+ from{opacity:0;transform:translateY(12px)}
+ to{opacity:1;transform:translateY(0)}
+}
+.center{text-align:center}
+.tag{
+ display:inline-block;
+ background:var(--pale);
+ color:var(--purple);
+ padding:6px 15px;
+ border-radius:20px;
+ font-size:11px;
+ font-weight:800;
+ letter-spacing:1px;
+}
+h1,h2{
+ color:var(--purple);
+ line-height:1.22;
+ margin:12px 0;
+}
+h1{font-size:clamp(30px,4vw,48px)}
+h2{font-size:clamp(24px,3vw,34px)}
+h3{
+ font-size:16px;
+ color:var(--purple);
+ margin:9px 0;
+}
+.sub{
+ color:var(--muted);
+ font-size:14px;
+ margin:5px 0 16px;
+}
+.btn{
+ background:var(--purple);
+ color:white;
+ border-radius:13px;
+ padding:11px 18px;
+ font-size:13px;
+ font-weight:800;
+ transition:transform .18s;
+}
+.btn:hover:not(:disabled){
+ transform:translateY(-2px);
+}
+.btn.yellow{
+ background:var(--yellow);
+ color:var(--ink);
+}
+.btn.light{
+ background:var(--pale);
+ color:var(--purple);
+}
+.btn:disabled{
+ opacity:.4;
+ cursor:not-allowed;
+}
+.btnrow{
+ display:flex;
+ gap:10px;
+ justify-content:center;
+ flex-wrap:wrap;
+ margin:14px 0;
+}
+.panel{
+ background:#F7F6FF;
+ border:2px solid var(--pale);
+ border-radius:18px;
+ padding:15px;
+}
+.three{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:12px;
+}
+.feedback{
+ min-height:24px;
+ font-weight:800;
+ color:var(--purple);
+ font-size:14px;
+ margin:12px 0;
+}
+.note{
+ font-size:11px;
+ color:var(--muted);
+}
+.hidden{display:none!important}
+.reveal{
+ max-width:850px;
+ margin:14px auto;
+ background:var(--pale);
+ padding:14px;
+ border-radius:15px;
+ color:var(--deep);
+ font-weight:700;
+}
+.scene{
+ position:relative;
+ overflow:hidden;
+ border-radius:20px;
+ border:3px solid var(--pale);
+ background:#d8f5ff;
+ height:clamp(230px,40vh,390px);
+ margin:15px auto;
+ max-width:920px;
+}
+.scene canvas{
+ width:100%;
+ height:100%;
+ display:block;
+ touch-action:none;
+}
+.sceneLabel{
+ position:absolute;
+ top:12px;
+ left:12px;
+ background:#ffffffed;
+ border-radius:10px;
+ padding:7px 12px;
+ font-size:12px;
+ font-weight:800;
+ color:var(--purple);
+ pointer-events:none;
+}
+.sceneHint{
+ position:absolute;
+ bottom:12px;
+ left:50%;
+ transform:translateX(-50%);
+ background:#25223cdb;
+ color:white;
+ padding:8px 15px;
+ border-radius:12px;
+ font-size:12px;
+ white-space:nowrap;
+ pointer-events:none;
+}
+.choice{
+ background:white;
+ border:2px solid var(--pale);
+ border-radius:15px;
+ padding:12px;
+ font-weight:800;
+ color:var(--purple);
+ transition:.2s;
+}
+.choice:hover{border-color:var(--purple)}
+.choice.selected{
+ background:var(--pale);
+ border-color:var(--purple);
+}
+.choice.correct{
+ background:#e1f8e9;
+ border-color:var(--green);
+ color:var(--green);
+}
+.choice.wrong{
+ background:#ffe9ec;
+ border-color:var(--coral);
+ color:#b73545;
+}
+.videoBox{
+ width:min(820px,100%);
+ aspect-ratio:16/9;
+ background:#242337;
+ border-radius:19px;
+ overflow:hidden;
+ margin:16px auto;
+}
+.videoBox iframe{
+ width:100%;
+ height:100%;
+ border:0;
+}
+.stepGrid{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:12px;
+ max-width:900px;
+ margin:18px auto;
+}
+.step{
+ padding:15px;
+ background:#F7F6FF;
+ border:2px solid var(--pale);
+ border-radius:17px;
+}
+.stepNumber{
+ width:36px;
+ height:36px;
+ border-radius:50%;
+ background:var(--yellow);
+ display:grid;
+ place-items:center;
+ font-weight:800;
+ margin:0 auto 9px;
+}
+.step strong{
+ color:var(--purple);
+ font-size:14px;
+}
+.step p{
+ color:var(--muted);
+ font-size:12px;
+}
+.task{
+ display:flex;
+ align-items:center;
+ gap:12px;
+ padding:14px;
+ background:#F7F6FF;
+ border:2px solid var(--pale);
+ border-radius:14px;
+ cursor:pointer;
+ font-weight:700;
+ font-size:13px;
+ text-align:left;
+}
+.task input{
+ width:20px;
+ height:20px;
+ accent-color:var(--purple);
+}
+.task:has(input:checked){
+ background:#e6faef;
+ border-color:var(--green);
+}
+.taskGrid{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:12px;
+ max-width:880px;
+ margin:18px auto;
+}
+.workbench{
+ display:grid;
+ grid-template-columns:145px 1fr 165px;
+ height:clamp(270px,42vh,390px);
+ border:3px solid var(--pale);
+ border-radius:19px;
+ overflow:hidden;
+ margin:14px auto;
+ max-width:1000px;
+}
+.sidebar{
+ background:#F1EFFE;
+ padding:12px;
+ display:flex;
+ flex-direction:column;
+ gap:10px;
+}
+.sidebar button{
+ background:white;
+ border:2px solid #ddd8f4;
+ border-radius:10px;
+ padding:10px 6px;
+ font-size:12px;
+ font-weight:800;
+ color:var(--purple);
+}
+.sidebar button.selected{
+ border-color:var(--purple);
+ background:var(--pale);
+}
+.workCanvas{
+ position:relative;
+ overflow:hidden;
+ background:#d9f5ff;
+}
+.workCanvas canvas{
+ display:block;
+ width:100%;
+ height:100%;
+ touch-action:none;
+}
+.workTop{
+ position:absolute;
+ top:10px;
+ left:10px;
+ background:white;
+ padding:7px 12px;
+ border-radius:10px;
+ font-size:11px;
+ font-weight:800;
+ color:var(--purple);
+ pointer-events:none;
+}
+
+/* INTERACTIVE WARM-UP */
+
+.warmupGrid{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:20px;
+ max-width:1000px;
+ margin:20px auto;
+}
+.photoCard,.gameCard{
+ background:white;
+ border:3px solid var(--pale);
+ border-radius:20px;
+ overflow:hidden;
+ box-shadow:0 8px 20px #39298e12;
+}
+.imageArea{
+ position:relative;
+ height:clamp(180px,30vh,280px);
+ background:var(--pale);
+ overflow:hidden;
+}
+.imageArea img,.imageArea canvas{
+ width:100%;
+ height:100%;
+ object-fit:cover;
+ display:block;
+}
+.photoCard h3,.gameCard h3{
+ font-size:17px;
+ margin:14px 10px 8px;
+}
+.cardBody{padding:0 14px 14px}
+.warmAnswer{
+ min-height:45px;
+ font-size:13px;
+ font-weight:700;
+ color:var(--purple);
+ padding:10px 5px;
+}
+.warmOptions{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:8px;
+}
+.warmOptions button{
+ font-size:12px;
+ padding:10px 7px;
+}
+.smallLabel{
+ position:absolute;
+ top:10px;
+ left:10px;
+ padding:6px 10px;
+ border-radius:8px;
+ background:#fffffff0;
+ font-size:10px;
+ font-weight:800;
+ color:var(--purple);
+}
+.filterControls{
+ display:flex;
+ justify-content:center;
+ gap:8px;
+ flex-wrap:wrap;
+}
+.filterBtn{
+ width:60px;
+ height:54px;
+ border-radius:12px;
+ border:2px solid var(--pale);
+ background:#F7F6FF;
+ padding:6px;
+}
+.filterBtn.selected{
+ border-color:var(--purple);
+ background:var(--pale);
+}
+.filterBtn svg{
+ width:100%;
+ height:100%;
+}
+.worldConnection{
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ gap:15px;
+ max-width:850px;
+ margin:20px auto;
+}
+.connectionBox{
+ flex:1;
+ background:var(--pale);
+ border-radius:16px;
+ padding:16px;
+ color:var(--purple);
+ font-weight:800;
+}
+.connectionArrow{
+ color:var(--purple);
+ font-size:30px;
+ font-weight:800;
+ animation:arrowMove 1.5s ease-in-out infinite;
+}
+@keyframes arrowMove{
+ 50%{transform:translateX(6px)}
+}
+.gameAction{
+ background:var(--pale);
+ border-radius:12px;
+ padding:10px;
+ color:var(--purple);
+ font-size:12px;
+ font-weight:700;
+ margin:10px 0;
+ min-height:38px;
+}
+.gameControls{
+ display:flex;
+ gap:8px;
+ justify-content:center;
+}
+.gameControls button{
+ flex:1;
+ font-size:12px;
+}
+
+/* AR VR QUIZ */
+
+.quizScenario{
+ max-width:850px;
+ height:clamp(220px,35vh,330px);
+ margin:15px auto;
+ border:3px solid var(--pale);
+ border-radius:20px;
+ overflow:hidden;
+ background:var(--pale);
+}
+.quizScenario canvas{
+ width:100%;
+ height:100%;
+ display:block;
+}
+.quizOptions{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:15px;
+ max-width:650px;
+ margin:16px auto;
+}
+.quizOptions button{
+ font-size:20px;
+ padding:17px;
+}
+.quizProgress{
+ display:flex;
+ justify-content:center;
+ gap:8px;
+ margin:12px;
+}
+.quizProgress span{
+ width:12px;
+ height:12px;
+ border-radius:50%;
+ background:#DAD5F2;
+}
+.quizProgress span.active{background:var(--purple)}
+.quizProgress span.completed{background:var(--green)}
+
+#confetti{
+ position:fixed;
+ inset:0;
+ pointer-events:none;
+ z-index:100;
+ width:100%;
+ height:100%;
+}
+footer{
+ height:70px;
+ background:white;
+ border-top:2px solid var(--pale);
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ padding:10px 24px;
+}
+.dots{display:flex;gap:6px}
+.dot{
+ width:8px;
+ height:8px;
+ border-radius:20px;
+ background:#d5d1e9;
+ padding:0;
+}
+.dot.active{
+ width:21px;
+ background:var(--purple);
+}
+@media(max-width:760px){
+ header .brandText{display:none}
+ main{padding:6px}
+ .slide{padding:16px 12px}
+ .three,.stepGrid,.taskGrid,.warmupGrid{
+  grid-template-columns:1fr;
+ }
+ .workbench{
+  grid-template-columns:90px 1fr 95px;
+ }
+ .sidebar{padding:6px;gap:6px}
+ .sidebar button{
+  font-size:10px;
+  padding:7px 3px;
+ }
+ .dots{display:none}
+ .sceneHint{font-size:10px}
+ .worldConnection{flex-direction:column}
+ .connectionBox{width:100%}
+ .connectionArrow{
+  transform:rotate(90deg);
+  animation:none;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ .slide.active,.connectionArrow{animation:none}
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="confetti"></canvas>
+
+<header>
+ <div class="brand">
+  <span class="logo">ALPHAGEN</span>
+  <span class="brandText">Delightex Edu · 3D Explorer</span>
+ </div>
+ <span class="counter" id="counter">1 / 12</span>
+</header>
+
+<main>
+
+<!-- SLIDE 1 -->
+
+<section class="slide active center">
+
+ <span class="tag">YOUR FIRST 3D ADVENTURE</span>
+
+ <h1>Ready to Enter a New World?</h1>
+
+ <p class="sub">A whole world is waiting for you!</p>
+
+ <div class="scene"
+ style="max-width:950px;height:clamp(270px,48vh,440px)">
+
+  <canvas id="portalCanvas"></canvas>
+  <div class="sceneLabel">The Magic Portal</div>
+
+ </div>
+
+ <button class="btn yellow" onclick="nextSlide()">
+  Let's Explore →
+ </button>
+
+</section>
+
+
+<!-- SLIDE 2: INTERACTIVE REAL-LIFE WARM-UP -->
+
+<section class="slide center">
+
+ <span class="tag">LET'S DISCOVER</span>
+
+ <h2>What's Happening Here?</h2>
+
+ <div class="warmupGrid">
+
+  <!-- HEADSET -->
+
+  <div class="photoCard">
+
+   <div class="imageArea">
+
+    <canvas id="headsetWarmCanvas"></canvas>
+
+    <img id="vrPhoto" class="hidden"
+    alt="Person wearing a VR headset">
+
+    <span class="smallLabel" id="headsetLabel">
+     Look closely
+    </span>
+
+   </div>
+
+   <div class="cardBody">
+
+    <h3>What might this person see?</h3>
+
+    <div class="warmOptions">
+
+     <button class="choice"
+     onclick="headsetGuess(this,'room')">
+      Their Room
+     </button>
+
+     <button class="choice"
+     onclick="headsetGuess(this,'world')">
+      A Digital World
+     </button>
+
+    </div>
+
+    <div class="warmAnswer" id="vrWarmAnswer">
+     Make a prediction!
+    </div>
+
+    <button class="btn yellow hidden"
+    id="headsetRevealBtn"
+    onclick="toggleHeadsetView()">
+     See Inside the Headset
+    </button>
+
+   </div>
+
+  </div>
+
+  <!-- FACE FILTER -->
+
+  <div class="photoCard">
+
+   <div class="imageArea">
+
+    <canvas id="filterWarmCanvas"></canvas>
+
+    <img id="filterPhoto" class="hidden"
+    alt="Person using a face filter">
+
+    <span class="smallLabel">Face Filter</span>
+
+   </div>
+
+   <div class="cardBody">
+
+    <h3>Try changing the filter!</h3>
+
+    <div class="filterControls">
+
+     <button class="filterBtn"
+     title="Cat filter"
+     aria-label="Cat filter"
+     onclick="chooseFilter('cat',this)">
+
+      <svg viewBox="0 0 60 48">
+       <path d="M8 32 L5 4 L28 20
+       M52 32 L55 4 L32 20"
+       fill="#B78B6C" stroke="#91694C" stroke-width="3"/>
+       <path d="M11 23 L10 11 L23 22
+       M49 23 L50 11 L37 22"
+       fill="#EDB6BE"/>
+       <ellipse cx="30" cy="34" rx="19" ry="12"
+       fill="#E5B78E"/>
+       <circle cx="23" cy="31" r="2.5" fill="#202033"/>
+       <circle cx="37" cy="31" r="2.5" fill="#202033"/>
+       <ellipse cx="30" cy="37" rx="4" ry="3" fill="#91694C"/>
+      </svg>
+
+     </button>
+
+     <button class="filterBtn"
+     title="Glasses filter"
+     aria-label="Glasses filter"
+     onclick="chooseFilter('glasses',this)">
+
+      <svg viewBox="0 0 60 48">
+       <rect x="4" y="13" width="22" height="22"
+       rx="7" fill="#5E48C4"/>
+       <rect x="34" y="13" width="22" height="22"
+       rx="7" fill="#5E48C4"/>
+       <path d="M26 22 Q30 17 34 22"
+       stroke="#39298E" stroke-width="4" fill="none"/>
+       <path d="M10 18 L19 18 L10 28Z" fill="#FFFFFF66"/>
+       <path d="M40 18 L49 18 L40 28Z" fill="#FFFFFF66"/>
+      </svg>
+
+     </button>
+
+     <button class="filterBtn"
+     title="Crown filter"
+     aria-label="Crown filter"
+     onclick="chooseFilter('crown',this)">
+
+      <svg viewBox="0 0 60 48">
+       <path d="M7 12 L19 25 L30 5
+       L41 25 L53 12 L47 41 L13 41Z"
+       fill="#FFD071" stroke="#D5A044" stroke-width="2"/>
+       <circle cx="30" cy="30" r="5" fill="#ED5661"/>
+       <circle cx="18" cy="33" r="3" fill="#5E48C4"/>
+       <circle cx="42" cy="33" r="3" fill="#59E4FB"/>
+      </svg>
+
+     </button>
+
+     <button class="filterBtn"
+     title="Remove filter"
+     aria-label="Remove filter"
+     onclick="chooseFilter('none',this)">
+
+      <svg viewBox="0 0 60 48">
+       <circle cx="30" cy="24" r="18"
+       fill="none" stroke="#ED5661" stroke-width="4"/>
+       <path d="M17 11 L43 37"
+       stroke="#ED5661" stroke-width="4"/>
+      </svg>
+
+     </button>
+
+    </div>
+
+    <div class="warmAnswer" id="filterWarmAnswer">
+     Pick a filter to see what changes.
+    </div>
+
+    <div id="filterQuestion" class="hidden">
+
+     <h3 style="font-size:13px">
+      Where did the new object come from?
+     </h3>
+
+     <div class="warmOptions">
+
+      <button class="choice"
+      onclick="filterGuess(this,false)">
+       Real World
+      </button>
+
+      <button class="choice"
+      onclick="filterGuess(this,true)">
+       Computer
+      </button>
+
+     </div>
+
+    </div>
+
+   </div>
+
+  </div>
+
+ </div>
+
+ <div class="reveal hidden" id="warmupReveal">
+  A computer can show us new worlds or add things to our own!
+ </div>
+
+</section>
+
+
+<!-- SLIDE 3: ROBLOX AND MINECRAFT -->
+
+<section class="slide center">
+
+ <span class="tag">FAMILIAR WORLDS</span>
+
+ <h2>Explore These Game Worlds!</h2>
+
+ <p class="sub">
+  What can you do inside them?
+ </p>
+
+ <div class="warmupGrid">
+
+  <!-- ROBLOX -->
+
+  <div class="gameCard">
+
+   <div class="imageArea">
+
+    <canvas id="robloxWarmCanvas"></canvas>
+
+    <img id="robloxPhoto" class="hidden"
+    alt="Roblox gameplay screenshot">
+
+    <span class="smallLabel" id="robloxLabel">
+     Roblox
+    </span>
+
+   </div>
+
+   <div class="cardBody">
+
+    <h3>Roblox</h3>
+
+    <div class="gameControls">
+
+     <button class="btn light"
+     onclick="robloxMove(-1)">
+      ← Move
+     </button>
+
+     <button class="btn yellow"
+     onclick="robloxJump()">
+      Jump
+     </button>
+
+     <button class="btn light"
+     onclick="robloxMove(1)">
+      Move →
+     </button>
+
+    </div>
+
+    <div class="gameAction" id="robloxFeedback">
+     Try moving the character.
+    </div>
+
+   </div>
+
+  </div>
+
+  <!-- MINECRAFT -->
+
+  <div class="gameCard">
+
+   <div class="imageArea">
+
+    <canvas id="minecraftWarmCanvas"></canvas>
+
+    <img id="minecraftPhoto" class="hidden"
+    alt="Minecraft gameplay screenshot">
+
+    <span class="smallLabel" id="minecraftLabel">
+     Minecraft
+    </span>
+
+   </div>
+
+   <div class="cardBody">
+
+    <h3>Minecraft</h3>
+
+    <div class="gameControls">
+
+     <button class="btn yellow"
+     onclick="minecraftBuild()">
+      Add Block
+     </button>
+
+     <button class="btn light"
+     onclick="minecraftRemove()">
+      Remove Block
+     </button>
+
+    </div>
+
+    <div class="gameAction" id="minecraftFeedback">
+     Try building something.
+    </div>
+
+   </div>
+
+  </div>
+
+ </div>
+
+ <div class="panel hidden"
+ id="gameQuestion"
+ style="max-width:850px;margin:14px auto">
+
+  <h3>What do both games have in common?</h3>
+
+  <div class="warmOptions">
+
+   <button class="choice"
+   onclick="worldGuess(this,false)">
+    Real places around us
+   </button>
+
+   <button class="choice"
+   onclick="worldGuess(this,true)">
+    Computer-made worlds
+   </button>
+
+  </div>
+
+  <div class="feedback" id="worldFeedback"></div>
+
+ </div>
+
+ <div id="worldConnection" class="hidden">
+
+  <div class="worldConnection">
+
+   <div class="connectionBox">
+    Playing on a Screen
+   </div>
+
+   <div class="connectionArrow">→</div>
+
+   <div class="connectionBox">
+    Imagine Stepping Inside!
+   </div>
+
+  </div>
+
+  <div class="reveal">
+   What if you could look around as if you were
+   really inside the game?
+  </div>
+
+  <p class="note">
+   A 3D game on a normal screen is not the same as VR.
+  </p>
+
+  <button class="btn yellow" onclick="nextSlide()">
+   Let's Find Out →
+  </button>
+
+ </div>
+
+</section>
+
+
+<!-- SLIDE 4: VIDEO FIRST -->
+
+<section class="slide center">
+
+ <span class="tag">WATCH & DISCOVER</span>
+
+ <h2>Let's Discover AR and VR!</h2>
+
+ <div class="videoBox">
+
+  <iframe id="lessonVideo"
+   title="AR and VR video"
+   allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture;web-share"
+   referrerpolicy="strict-origin-when-cross-origin"
+   allowfullscreen>
+  </iframe>
+
+ </div>
+
+ <p class="note">
+
+  If the video doesn't load,
+
+  <a href="https://www.youtube.com/watch?v=vz0UUVDt2ps"
+  target="_blank" rel="noopener noreferrer">
+   watch it on YouTube
+  </a>.
+
+ </p>
+
+ <div class="reveal">
+  What interesting things did you spot?
+ </div>
+
+</section>
+
+
+<!-- SLIDE 5: VR -->
+
+<section class="slide center">
+
+ <span class="tag">DISCOVER VR</span>
+
+ <h2>Virtual Reality (VR)</h2>
+
+ <p class="sub">
+  Step inside a computer-made world!
+ </p>
+
+ <div class="scene">
+
+  <canvas id="vrCanvas"></canvas>
+
+  <div class="sceneLabel" id="vrWorldLabel">
+   Virtual Forest
+  </div>
+
+  <div class="sceneHint">
+   Drag left or right to look around
+  </div>
+
+ </div>
+
+ <div class="btnrow">
+
+  <button class="btn light" onclick="turnVR(-1)">
+   ← Look Left
+  </button>
+
+  <button class="btn light" onclick="turnVR(1)">
+   Look Right →
+  </button>
+
+  <button class="btn yellow" onclick="changeVRWorld()">
+   Change World
+  </button>
+
+ </div>
+
+ <div class="reveal">
+  VR makes you feel like you're inside another world.
+ </div>
+
+ <p class="note">Interactive preview of a virtual world.</p>
+
+</section>
+
+
+<!-- SLIDE 6: AR -->
+
+<section class="slide center">
+
+ <span class="tag">DISCOVER AR</span>
+
+ <h2>Augmented Reality (AR)</h2>
+
+ <p class="sub">
+  Add digital things to the world around you!
+ </p>
+
+ <div class="scene">
+
+  <canvas id="arCanvas"></canvas>
+
+  <div class="sceneLabel">
+   Your Room + Digital Dinosaur
+  </div>
+
+  <div class="sceneHint">
+   Drag the dinosaur to move it
+  </div>
+
+ </div>
+
+ <div class="btnrow">
+
+  <button class="btn light" onclick="scaleAR(-.15)">
+   Smaller −
+  </button>
+
+  <button class="btn light" onclick="scaleAR(.15)">
+   Bigger +
+  </button>
+
+  <button class="btn yellow"
+  onclick="toggleAR()" id="arToggle">
+   Hide Dinosaur
+  </button>
+
+  <button class="btn light" onclick="resetAR()">
+   Reset
+  </button>
+
+ </div>
+
+ <div class="reveal">
+  Real world + digital things = AR!
+ </div>
+
+ <p class="note">
+  This is an AR demonstration, not a live camera view.
+ </p>
+
+</section>
+
+
+<!-- SLIDE 7: AR VR QUIZ -->
+
+<section class="slide center">
+
+ <span class="tag">QUICK CHALLENGE</span>
+
+ <h2>AR or VR?</h2>
+
+ <div class="quizProgress" id="quizProgress">
+  <span class="active"></span>
+  <span></span>
+  <span></span>
+ </div>
+
+ <p class="sub" id="arvrQuestion">
+  A dinosaur appears in your room through a tablet.
+ </p>
+
+ <div class="quizScenario">
+  <canvas id="scenarioCanvas"></canvas>
+ </div>
+
+ <div class="quizOptions">
+
+  <button class="choice" onclick="answerMode('AR',this)">
+   AR
+  </button>
+
+  <button class="choice" onclick="answerMode('VR',this)">
+   VR
+  </button>
+
+ </div>
+
+ <div class="feedback" id="arvrFeedback"></div>
+
+ <button class="btn yellow hidden"
+ id="arvrNext" onclick="nextModeQuestion()">
+  Next Challenge →
+ </button>
+
+</section>
+
+
+<!-- SLIDE 8: DELIGHTEX EDU -->
+
+<section class="slide center">
+
+ <span class="tag">MEET YOUR CREATION TOOL</span>
+
+ <h2>Meet Delightex Edu!</h2>
+
+ <p class="sub">Make your own 3D worlds.</p>
+
+ <div class="scene">
+
+  <canvas id="platformCanvas"></canvas>
+
+  <div class="sceneLabel">
+   Watch a world come to life
+  </div>
+
+ </div>
+
+ <div class="three" style="max-width:850px;margin:auto">
+
+  <div class="panel">
+   <h3>Choose</h3>
+   <p class="sub">Find 3D things</p>
+  </div>
+
+  <div class="panel">
+   <h3>Create</h3>
+   <p class="sub">Make your world</p>
+  </div>
+
+  <div class="panel">
+   <h3>Explore</h3>
+   <p class="sub">Look around</p>
+  </div>
+
+ </div>
+
+ <div class="btnrow">
+
+  <button class="btn yellow" onclick="openDelightex()">
+   Open Delightex Edu ↗
+  </button>
+
+ </div>
+
+</section>
+
+
+<!-- SLIDE 9: WORKSPACE -->
+
+<section class="slide center">
+
+ <span class="tag">3D WORKSPACE</span>
+
+ <h2>Let's Try the 3D Tools!</h2>
+
+ <p class="sub">
+  Select an object. Move, turn or resize it.
+ </p>
+
+ <div class="workbench">
+
+  <div class="sidebar">
+
+   <button onclick="addWorkspaceObject('tree')">
+    Add Tree
+   </button>
+
+   <button onclick="addWorkspaceObject('cube')">
+    Add Cube
+   </button>
+
+   <button onclick="addWorkspaceObject('sphere')">
+    Add Ball
+   </button>
+
+  </div>
+
+  <div class="workCanvas">
+
+   <div class="workTop">Practice 3D Scene</div>
+
+   <canvas id="workspaceCanvas"></canvas>
+
+  </div>
+
+  <div class="sidebar">
+
+   <button id="toolMove" class="selected"
+   onclick="setWorkspaceTool('move')">
+    Move
+   </button>
+
+   <button id="toolRotate"
+   onclick="setWorkspaceTool('rotate')">
+    Rotate
+   </button>
+
+   <button id="toolScale"
+   onclick="setWorkspaceTool('scale')">
+    Resize
+   </button>
+
+   <button onclick="resetWorkspace()">
+    Reset
+   </button>
+
+  </div>
+
+ </div>
+
+ <div class="reveal" id="workspaceFeedback">
+  Choose a 3D object to add!
+ </div>
+
+ <p class="note">
+  Practice scene. Delightex Edu has its own tools and controls.
+ </p>
+
+</section>
+
+
+<!-- SLIDE 10: ABOUT ME -->
+
+<section class="slide center">
+
+ <span class="tag">YOUR FIRST PROJECT</span>
+
+ <h2>All About Me!</h2>
+
+ <p class="sub">
+  A 3D world that shows what you love.
+ </p>
+
+ <div class="scene">
+
+  <canvas id="aboutCanvas"></canvas>
+
+  <div class="sceneLabel">Your 3D Story</div>
+
+ </div>
+
+ <div class="stepGrid">
+
+  <div class="step">
+   <div class="stepNumber">1</div>
+   <strong>Open Delightex</strong>
+   <p>Go to your projects</p>
+  </div>
+
+  <div class="step">
+   <div class="stepNumber">2</div>
+   <strong>Find the Template</strong>
+   <p>Choose "All about me"</p>
+  </div>
+
+  <div class="step">
+   <div class="stepNumber">3</div>
+   <strong>Look Around</strong>
+   <p>See what's inside</p>
+  </div>
+
+ </div>
+
+ <div class="btnrow">
+
+  <button class="btn yellow" onclick="openDelightex()">
+   Go to Delightex Edu ↗
+  </button>
+
+ </div>
+
+</section>
+
+
+<!-- SLIDE 11: EXPLORATION -->
+
+<section class="slide center">
+
+ <span class="tag">EXPLORER MISSIONS</span>
+
+ <h2>What's Inside Your World?</h2>
+
+ <p class="sub">
+  Try these in your Delightex Edu template.
+ </p>
+
+ <div class="taskGrid" id="exploreTasks">
+
+  <label class="task">
+   <input type="checkbox" onchange="checkExplore()">
+   Look around the scene
+  </label>
+
+  <label class="task">
+   <input type="checkbox" onchange="checkExplore()">
+   Find your favourite object
+  </label>
+
+  <label class="task">
+   <input type="checkbox" onchange="checkExplore()">
+   Click an object
+  </label>
+
+  <label class="task">
+   <input type="checkbox" onchange="checkExplore()">
+   Move an object
+  </label>
+
+ </div>
+
+ <div class="scene" style="height:240px">
+
+  <canvas id="exploreCanvas"></canvas>
+
+ </div>
+
+ <div class="feedback" id="exploreFeedback">
+  0 of 4 missions completed
+ </div>
+
+</section>
+
+
+<!-- SLIDE 12: FINAL -->
+
+<section class="slide center">
+
+ <span class="tag">MISSION COMPLETE</span>
+
+ <h1>You're a 3D Explorer!</h1>
+
+ <div class="scene" style="height:230px">
+
+  <canvas id="finalCanvas"></canvas>
+
+ </div>
+
+ <div class="taskGrid" id="finalTasks">
+
+  <label class="task">
+   <input type="checkbox" onchange="checkFinal()">
+   I can explain VR
+  </label>
+
+  <label class="task">
+   <input type="checkbox" onchange="checkFinal()">
+   I can explain AR
+  </label>
+
+  <label class="task">
+   <input type="checkbox" onchange="checkFinal()">
+   I explored my 3D scene
+  </label>
+
+  <label class="task">
+   <input type="checkbox" onchange="checkFinal()">
+   I moved an object
+  </label>
+
+ </div>
+
+ <div class="feedback" id="finalFeedback">
+  0 of 4 missions complete
+ </div>
+
+ <button class="btn yellow" onclick="finishLesson()">
+  Finish Lesson!
+ </button>
+
+</section>
+
+</main>
+
+<footer>
+
+ <button class="btn light" id="prev" onclick="prevSlide()">
+  ← Previous
+ </button>
+
+ <div class="dots" id="dots"></div>
+
+ <button class="btn yellow" id="next" onclick="nextSlide()">
+  Next →
+ </button>
+
+</footer>
+
+<script>
+"use strict";
+
+/* =====================================
+   IMAGE SETTINGS
+===================================== */
+
+const IMAGES={
+ vr:"images/vr-headset.jpg",
+ filter:"images/face-filter.jpg",
+ roblox:"images/roblox.jpg",
+ minecraft:"images/minecraft.jpg"
+};
+
+const $=id=>document.getElementById(id);
+const total=document.querySelectorAll(".slide").length;
+const TAU=Math.PI*2;
+
+let current=1;
+let slideStarted=performance.now();
+
+const VIDEO_SLIDE=4;
+
+const VIDEO_URL=
+ "https://www.youtube-nocookie.com/embed/vz0UUVDt2ps?rel=0";
+
+const illustrationOnly=new Set();
+
+function loadPhoto(imageId,canvasId,url){
+
+ const img=$(imageId);
+ const canvas=$(canvasId);
+
+ img.onload=()=>{
+
+  if(illustrationOnly.has(imageId))return;
+
+  img.classList.remove("hidden");
+  canvas.classList.add("hidden");
+
+ };
+
+ img.onerror=()=>{
+
+  img.classList.add("hidden");
+  canvas.classList.remove("hidden");
+
+ };
+
+ img.src=url;
+
+}
+
+function showIllustration(imageId,canvasId){
+
+ illustrationOnly.add(imageId);
+
+ $(imageId).classList.add("hidden");
+ $(canvasId).classList.remove("hidden");
+
+}
+
+loadPhoto("vrPhoto","headsetWarmCanvas",IMAGES.vr);
+loadPhoto("filterPhoto","filterWarmCanvas",IMAGES.filter);
+loadPhoto("robloxPhoto","robloxWarmCanvas",IMAGES.roblox);
+loadPhoto("minecraftPhoto","minecraftWarmCanvas",IMAGES.minecraft);
+
+
+/* =====================================
+   NAVIGATION
+===================================== */
+
+function showSlide(n){
+
+ if(n<1||n>total)return;
+
+ if(current===VIDEO_SLIDE&&n!==VIDEO_SLIDE){
+
+  $("lessonVideo").src="about:blank";
+
+ }
+
+ if(n===VIDEO_SLIDE&&current!==VIDEO_SLIDE){
+
+  $("lessonVideo").src=VIDEO_URL;
+
+ }
+
+ current=n;
+ slideStarted=performance.now();
+
+ document.querySelectorAll(".slide").forEach((s,i)=>{
+
+  s.classList.toggle("active",i===n-1);
+
+  if(i===n-1)s.scrollTop=0;
+
+ });
+
+ $("counter").textContent=n+" / "+total;
+
+ $("prev").disabled=n===1;
+ $("next").disabled=n===total;
+
+ $("dots").innerHTML="";
+
+ for(let i=1;i<=total;i++){
+
+  const b=document.createElement("button");
+
+  b.className="dot"+(i===n?" active":"");
+  b.title="Slide "+i;
+  b.setAttribute("aria-label","Slide "+i);
+  b.onclick=()=>showSlide(i);
+
+  $("dots").appendChild(b);
+
+ }
+
+}
+
+function nextSlide(){showSlide(current+1)}
+function prevSlide(){showSlide(current-1)}
+
+function openDelightex(){
+
+ window.open(
+  "https://edu.delightex.com/",
+  "_blank",
+  "noopener,noreferrer"
+ );
+
+}
+
+
+/* =====================================
+   CONFETTI
+===================================== */
+
+let confettiFrame=0;
+
+function confetti(){
+
+ cancelAnimationFrame(confettiFrame);
+
+ const c=$("confetti");
+ const ctx=c.getContext("2d");
+ const d=devicePixelRatio||1;
+
+ const w=innerWidth;
+ const h=innerHeight;
+
+ c.width=w*d;
+ c.height=h*d;
+
+ ctx.setTransform(d,0,0,d,0,0);
+
+ const colors=[
+  "#5E48C4","#FFD071","#59E4FB","#ED5661"
+ ];
+
+ const bits=Array.from({length:120},()=>({
+
+  x:Math.random()*w,
+  y:-Math.random()*h*.8,
+  v:3+Math.random()*5,
+  vx:(Math.random()-.5)*2,
+  s:4+Math.random()*7,
+  rotation:Math.random()*TAU,
+  color:colors[Math.floor(Math.random()*colors.length)]
+
+ }));
+
+ let frame=0;
+
+ function draw(){
+
+  ctx.clearRect(0,0,w,h);
+
+  bits.forEach(p=>{
+
+   p.y+=p.v;
+   p.x+=p.vx;
+   p.rotation+=.06;
+
+   ctx.save();
+   ctx.translate(p.x,p.y);
+   ctx.rotate(p.rotation);
+
+   ctx.fillStyle=p.color;
+   ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*.65);
+
+   ctx.restore();
+
+  });
+
+  if(++frame<170){
+
+   confettiFrame=requestAnimationFrame(draw);
+
+  }else{
+
+   ctx.clearRect(0,0,w,h);
+
+  }
+
+ }
+
+ draw();
+
+}
+
+
+/* =====================================
+   CANVAS TOOLS
+===================================== */
+
+function canvasInfo(id){
+
+ const c=$(id);
+ const r=c.getBoundingClientRect();
+ const d=Math.min(devicePixelRatio||1,2);
+
+ const w=Math.max(1,r.width);
+ const h=Math.max(1,r.height);
+
+ if(
+  c.width!==Math.round(w*d)||
+  c.height!==Math.round(h*d)
+ ){
+
+  c.width=Math.round(w*d);
+  c.height=Math.round(h*d);
+
+ }
+
+ const ctx=c.getContext("2d");
+
+ ctx.setTransform(d,0,0,d,0,0);
+
+ return {c,ctx,w,h};
+
+}
+
+function roundRect(ctx,x,y,w,h,r,color){
+
+ ctx.fillStyle=color;
+ ctx.beginPath();
+ ctx.roundRect(x,y,w,h,r);
+ ctx.fill();
+
+}
+
+function line(ctx,x1,y1,x2,y2,color,width=2){
+
+ ctx.beginPath();
+ ctx.moveTo(x1,y1);
+ ctx.lineTo(x2,y2);
+ ctx.strokeStyle=color;
+ ctx.lineWidth=width;
+ ctx.stroke();
+
+}
+
+function ellipse(ctx,x,y,rx,ry,color){
+
+ ctx.beginPath();
+ ctx.ellipse(x,y,rx,ry,0,0,TAU);
+ ctx.fillStyle=color;
+ ctx.fill();
+
+}
+
+function circle(ctx,x,y,r,color){
+
+ ctx.beginPath();
+ ctx.arc(x,y,r,0,TAU);
+ ctx.fillStyle=color;
+ ctx.fill();
+
+}
+
+function polygon(ctx,points,color){
+
+ ctx.beginPath();
+ ctx.moveTo(points[0][0],points[0][1]);
+
+ for(let i=1;i<points.length;i++){
+
+  ctx.lineTo(points[i][0],points[i][1]);
+
+ }
+
+ ctx.closePath();
+ ctx.fillStyle=color;
+ ctx.fill();
+
+}
+
+function label(ctx,text,x,y,size=13,color="#5E48C4"){
+
+ ctx.fillStyle=color;
+ ctx.font=`700 ${size}px Poppins`;
+ ctx.textAlign="center";
+ ctx.fillText(text,x,y);
+ ctx.textAlign="left";
+
+}
+
+function sky(ctx,w,h,theme="meadow"){
+
+ const g=ctx.createLinearGradient(0,0,0,h);
+
+ if(theme==="space"){
+
+  g.addColorStop(0,"#10142F");
+  g.addColorStop(1,"#5654AA");
+
+ }else if(theme==="ocean"){
+
+  g.addColorStop(0,"#66DFF2");
+  g.addColorStop(1,"#1771A5");
+
+ }else{
+
+  g.addColorStop(0,"#9BE3FF");
+  g.addColorStop(1,"#F3EAFF");
+
+ }
+
+ ctx.fillStyle=g;
+ ctx.fillRect(0,0,w,h);
+
+}
+
+function cube(ctx,x,y,s,
+ colors=["#8777e0","#5E48C4","#42349a"]){
+
+ polygon(ctx,[
+  [x,y-s],[x+s,y-s*.48],
+  [x,y],[x-s,y-s*.48]
+ ],colors[0]);
+
+ polygon(ctx,[
+  [x-s,y-s*.48],[x,y],
+  [x,y+s],[x-s,y+s*.48]
+ ],colors[1]);
+
+ polygon(ctx,[
+  [x+s,y-s*.48],[x,y],
+  [x,y+s],[x+s,y+s*.48]
+ ],colors[2]);
+
+}
+
+function tree(ctx,x,y,s){
+
+ ctx.save();
+ ctx.translate(x,y);
+ ctx.scale(s,s);
+
+ ellipse(ctx,0,4,45,12,"#4d8f6e44");
+
+ roundRect(ctx,-9,-65,18,70,5,"#916340");
+
+ polygon(ctx,[
+  [-52,-50],[0,-155],[52,-50]
+ ],"#17865C");
+
+ polygon(ctx,[
+  [-45,-90],[0,-175],[45,-90]
+ ],"#20A77A");
+
+ polygon(ctx,[
+  [-35,-125],[0,-193],[35,-125]
+ ],"#49C48C");
+
+ ctx.restore();
+
+}
+
+function robot(ctx,x,y,s,t=0){
+
+ ctx.save();
+ ctx.translate(x,y+Math.sin(t*2)*4);
+ ctx.scale(s,s);
+
+ ellipse(ctx,0,55,50,12,"#39298e30");
+
+ roundRect(ctx,-38,-42,76,82,17,"#5E48C4");
+ roundRect(ctx,-29,-30,58,52,13,"white");
+
+ circle(ctx,-13,-7,6,"#242337");
+ circle(ctx,13,-7,6,"#242337");
+
+ ctx.beginPath();
+ ctx.arc(0,2,17,.2,Math.PI-.2);
+ ctx.strokeStyle="#ED5661";
+ ctx.lineWidth=4;
+ ctx.stroke();
+
+ roundRect(ctx,-5,-57,10,17,4,"#7B6ED4");
+ circle(ctx,0,-62,9,"#FFD071");
+
+ ctx.restore();
+
+}
+
+function dinosaur(ctx,x,y,s,t=0){
+
+ ctx.save();
+ ctx.translate(x,y+Math.sin(t*2)*3);
+ ctx.scale(s,s);
+
+ ellipse(ctx,0,5,76,15,"#22222220");
+
+ polygon(ctx,[
+  [-47,-25],[-105,-65],
+  [-83,-10],[-35,9]
+ ],"#188D67");
+
+ ellipse(ctx,0,-52,59,62,"#20A77A");
+
+ roundRect(ctx,32,-125,34,86,17,"#20A77A");
+ ellipse(ctx,49,-127,37,31,"#20A77A");
+
+ polygon(ctx,[
+  [61,-112],[96,-102],[61,-93]
+ ],"#4CBD8B");
+
+ circle(ctx,59,-137,7,"white");
+ circle(ctx,61,-137,3,"#242337");
+
+ for(let i=0;i<4;i++){
+
+  polygon(ctx,[
+   [-40+i*24,-99],
+   [-31+i*24,-118],
+   [-20+i*24,-100]
+  ],"#FFD071");
+
+ }
+
+ roundRect(ctx,-30,-15,19,29,7,"#188D67");
+ roundRect(ctx,18,-15,19,29,7,"#188D67");
+
+ ctx.restore();
+
+}
+
+function house(ctx,x,y,s){
+
+ ctx.save();
+ ctx.translate(x,y);
+ ctx.scale(s,s);
+
+ ellipse(ctx,0,7,110,18,"#00000018");
+
+ roundRect(ctx,-75,-105,150,112,5,"#FFF0CF");
+
+ polygon(ctx,[
+  [-94,-104],[0,-185],[94,-104]
+ ],"#ED5661");
+
+ roundRect(ctx,-19,-70,38,77,4,"#5E48C4");
+ roundRect(ctx,-62,-80,30,32,3,"#59E4FB");
+ roundRect(ctx,32,-80,30,32,3,"#59E4FB");
+
+ ctx.restore();
+
+}
+
+function sceneGround(ctx,w,h,theme="meadow"){
+
+ const color={
+  space:"#655EAE",
+  ocean:"#D5D0A6",
+  meadow:"#91D5A8"
+ }[theme];
+
+ polygon(ctx,[
+  [0,h*.76],[w*.5,h*.65],
+  [w,h*.76],[w,h],[0,h]
+ ],color);
+
+}
+
+
+/* =====================================
+   SLIDE 2: HEADSET INTERACTION
+===================================== */
+
+let headsetInside=false;
+let headsetExplored=false;
+let filterExplored=false;
+
+function markChoice(button){
+
+ button.parentElement.querySelectorAll(".choice")
+ .forEach(b=>b.classList.remove("selected","correct","wrong"));
+
+ button.classList.add("selected");
+
+}
+
+function headsetGuess(button,guess){
+
+ markChoice(button);
+
+ $("vrWarmAnswer").textContent=
+  "Let's look inside and find out!";
+
+ $("headsetRevealBtn").classList.remove("hidden");
+
+ if(headsetInside){
+
+  headsetInside=false;
+
+  $("headsetLabel").textContent="Look closely";
+
+  $("headsetRevealBtn").textContent=
+   "See Inside the Headset";
+
+ }
+
+}
+
+function toggleHeadsetView(){
+
+ headsetInside=!headsetInside;
+
+ showIllustration("vrPhoto","headsetWarmCanvas");
+
+ $("headsetLabel").textContent=headsetInside
+  ?"Inside the Headset"
+  :"VR Headset";
+
+ $("headsetRevealBtn").textContent=headsetInside
+  ?"Back to Headset"
+  :"See Inside the Headset";
+
+ if(headsetInside){
+
+  headsetExplored=true;
+
+  $("vrWarmAnswer").textContent=
+   "A whole new world appears!";
+
+  checkWarmup();
+
+ }
+
+}
+
+function drawHeadsetWarm(t){
+
+ if($("headsetWarmCanvas").classList.contains("hidden"))return;
+
+ const {ctx,w,h}=canvasInfo("headsetWarmCanvas");
+
+ if(headsetInside){
+
+  renderWorld(ctx,w,h,t,Math.sin(t*.5)*.5,"space");
+
+  const shade=ctx.createRadialGradient(
+   w/2,h/2,h*.15,w/2,h/2,w*.6
+  );
+
+  shade.addColorStop(0,"#00000000");
+  shade.addColorStop(1,"#000000BB");
+
+  ctx.fillStyle=shade;
+  ctx.fillRect(0,0,w,h);
+
+  return;
+
+ }
+
+ const g=ctx.createLinearGradient(0,0,w,h);
+
+ g.addColorStop(0,"#D9D5F6");
+ g.addColorStop(1,"#BCEAF2");
+
+ ctx.fillStyle=g;
+ ctx.fillRect(0,0,w,h);
+
+ ctx.save();
+
+ ctx.translate(w*.5,h*.47);
+
+ const s=Math.min(w/340,h/260);
+
+ ctx.scale(s,s);
+
+ for(let i=0;i<4;i++){
+
+  ctx.beginPath();
+
+  ctx.arc(
+   0,0,85+i*23+Math.sin(t+i)*4,0,TAU
+  );
+
+  ctx.strokeStyle="#FFFFFF70";
+  ctx.lineWidth=2;
+  ctx.stroke();
+
+ }
+
+ roundRect(ctx,-87,63,174,125,42,"#5E48C4");
+ roundRect(ctx,-19,35,38,45,12,"#D6A17E");
+
+ ellipse(ctx,0,-8,59,73,"#E3B28D");
+ ellipse(ctx,0,-57,61,34,"#493B38");
+
+ roundRect(ctx,-72,-33,144,25,12,"#242337");
+ roundRect(ctx,-67,-40,134,64,21,"#FFFFFF");
+ roundRect(ctx,-58,-32,116,48,16,"#292B46");
+
+ const visor=ctx.createLinearGradient(-60,-30,60,20);
+
+ visor.addColorStop(0,"#4741A0");
+ visor.addColorStop(.5,"#80CBEA");
+ visor.addColorStop(1,"#5E48C4");
+
+ roundRect(ctx,-50,-25,100,32,12,visor);
+
+ ctx.save();
+
+ ctx.beginPath();
+ ctx.roundRect(-50,-25,100,32,12);
+ ctx.clip();
+
+ polygon(ctx,[
+  [-80+(t*35)%180,-28],
+  [-65+(t*35)%180,-28],
+  [-35+(t*35)%180,10],
+  [-50+(t*35)%180,10]
+ ],"#FFFFFF66");
+
+ ctx.restore();
+
+ ctx.beginPath();
+ ctx.arc(0,30,17,.2,Math.PI-.2);
+ ctx.strokeStyle="#9B5948";
+ ctx.lineWidth=3;
+ ctx.stroke();
+
+ ctx.save();
+ ctx.translate(-70,90);
+ ctx.rotate(-.55+Math.sin(t*1.8)*.1);
+
+ roundRect(ctx,-17,-12,34,80,16,"#5E48C4");
+ roundRect(ctx,-15,60,30,38,14,"#E3B28D");
+
+ ctx.restore();
+
+ ctx.save();
+ ctx.translate(70,90);
+ ctx.rotate(.55-Math.sin(t*1.8)*.1);
+
+ roundRect(ctx,-17,-12,34,80,16,"#5E48C4");
+ roundRect(ctx,-15,60,30,38,14,"#E3B28D");
+
+ ctx.restore();
+ ctx.restore();
+
+ label(ctx,"VR headset illustration",w/2,h-12,10);
+
+}
+
+
+/* =====================================
+   SLIDE 2: FACE FILTER INTERACTION
+===================================== */
+
+let selectedFilter="cat";
+
+function chooseFilter(type,button){
+
+ selectedFilter=type;
+
+ showIllustration("filterPhoto","filterWarmCanvas");
+
+ button.parentElement.querySelectorAll("button")
+ .forEach(b=>b.classList.remove("selected"));
+
+ button.classList.add("selected");
+
+ const messages={
+
+  cat:"Digital ears and whiskers appeared!",
+
+  glasses:"Digital glasses appeared!",
+
+  crown:"A digital crown appeared!",
+
+  none:"The filter is gone. The face is still there!"
+
+ };
+
+ $("filterWarmAnswer").textContent=messages[type];
+
+ if(type!=="none"){
+
+  $("filterQuestion").classList.remove("hidden");
+
+ }
+
+}
+
+function filterGuess(button,correct){
+
+ markChoice(button);
+
+ if(correct){
+
+  button.classList.add("correct");
+
+  $("filterWarmAnswer").textContent=
+   "The computer added the filter to the real face!";
+
+  if(!filterExplored)confetti();
+
+  filterExplored=true;
+
+  checkWarmup();
+
+ }else{
+
+  button.classList.add("wrong");
+
+  $("filterWarmAnswer").textContent=
+   "Look again. The filter is not really on the face.";
+
+ }
+
+}
+
+function checkWarmup(){
+
+ if(headsetExplored&&filterExplored){
+
+  $("warmupReveal").classList.remove("hidden");
+
+ }
+
+}
+
+function drawFilterFace(ctx,cx,cy,s,t,filter="cat"){
+
+ ctx.save();
+
+ ctx.translate(cx,cy);
+ ctx.scale(s,s);
+
+ ellipse(ctx,0,108,78,43,"#5E48C4");
+
+ roundRect(ctx,-17,48,34,34,10,"#DCA77F");
+
+ ellipse(ctx,0,0,51,65,"#DCA77F");
+
+ ellipse(ctx,0,-43,52,30,"#44332C");
+
+ ellipse(ctx,-18,-5,5,7,"#242337");
+ ellipse(ctx,18,-5,5,7,"#242337");
+
+ ctx.beginPath();
+ ctx.arc(0,18,17,.2,Math.PI-.2);
+ ctx.strokeStyle="#A85E50";
+ ctx.lineWidth=3;
+ ctx.stroke();
+
+ if(filter==="cat"){
+
+  polygon(ctx,[
+   [-49,-43],[-72,-108],[-13,-60]
+  ],"#95694B");
+
+  polygon(ctx,[
+   [49,-43],[72,-108],[13,-60]
+  ],"#95694B");
+
+  polygon(ctx,[
+   [-46,-57],[-61,-88],[-27,-61]
+  ],"#EDB6BE");
+
+  polygon(ctx,[
+   [46,-57],[61,-88],[27,-61]
+  ],"#EDB6BE");
+
+  ellipse(ctx,0,10,13,8,"#49332B");
+
+  for(let i=0;i<3;i++){
+
+   line(ctx,-24,12+i*7,-47,5+i*11,"#49332B",2);
+   line(ctx,24,12+i*7,47,5+i*11,"#49332B",2);
+
+  }
+
+ }
+
+ if(filter==="glasses"){
+
+  roundRect(ctx,-46,-23,42,34,9,"#39298E");
+  roundRect(ctx,4,-23,42,34,9,"#39298E");
+
+  line(ctx,-4,-12,4,-12,"#39298E",6);
+
+  polygon(ctx,[
+   [-39,-17],[-24,-17],[-39,0]
+  ],"#FFFFFF66");
+
+  polygon(ctx,[
+   [11,-17],[26,-17],[11,0]
+  ],"#FFFFFF66");
+
+ }
+
+ if(filter==="crown"){
+
+  polygon(ctx,[
+   [-51,-56],[-60,-104],
+   [-28,-81],[0,-120],
+   [28,-81],[60,-104],
+   [51,-56]
+  ],"#FFD071");
+
+  roundRect(ctx,-51,-64,102,15,3,"#E4AC42");
+
+  circle(ctx,0,-79,8,"#ED5661");
+  circle(ctx,-30,-74,5,"#5E48C4");
+  circle(ctx,30,-74,5,"#59E4FB");
+
+ }
+
+ ctx.restore();
+
+}
+
+function drawFilterWarm(t){
+
+ if($("filterWarmCanvas").classList.contains("hidden"))return;
+
+ const {ctx,w,h}=canvasInfo("filterWarmCanvas");
+
+ sky(ctx,w,h);
+
+ const phoneW=Math.min(w*.52,h*.68);
+ const phoneH=h*.92;
+
+ const px=(w-phoneW)/2;
+ const py=h*.04;
+
+ roundRect(ctx,px,py,phoneW,phoneH,21,"#242337");
+
+ roundRect(
+  ctx,px+8,py+10,
+  phoneW-16,phoneH-20,12,"#D5DCEB"
+ );
+
+ ctx.save();
+
+ ctx.beginPath();
+
+ ctx.roundRect(
+  px+8,py+10,phoneW-16,phoneH-20,12
+ );
+
+ ctx.clip();
+
+ drawFilterFace(
+  ctx,w*.5,h*.47,
+  Math.min(phoneW/180,h/280),
+  t,selectedFilter
+ );
+
+ ctx.restore();
+
+ circle(ctx,w*.5,h*.88,10,"white");
+
+}
+
+
+/* =====================================
+   SLIDE 3: INTERACTIVE GAME WORLDS
+===================================== */
+
+let robloxExplored=false;
+let minecraftExplored=false;
+
+let robloxPosition=1;
+let robloxVisualPosition=1;
+
+let jumpStarted=-Infinity;
+let minecraftBlocks=0;
+let blockAnimation=-Infinity;
+
+function checkGameExploration(){
+
+ if(robloxExplored&&minecraftExplored){
+
+  $("gameQuestion").classList.remove("hidden");
+
+ }
+
+}
+
+function robloxMove(direction){
+
+ showIllustration("robloxPhoto","robloxWarmCanvas");
+
+ $("robloxLabel").textContent="Obstacle-course demo";
+
+ robloxPosition=Math.max(
+  0,Math.min(4,robloxPosition+direction)
+ );
+
+ robloxExplored=true;
+
+ $("robloxFeedback").textContent=
+  "You moved a character inside a digital world.";
+
+ checkGameExploration();
+
+}
+
+function robloxJump(){
+
+ showIllustration("robloxPhoto","robloxWarmCanvas");
+
+ $("robloxLabel").textContent="Obstacle-course demo";
+
+ jumpStarted=performance.now()/1000;
+
+ robloxExplored=true;
+
+ $("robloxFeedback").textContent=
+  "Your character can jump in this world!";
+
+ checkGameExploration();
+
+}
+
+function minecraftBuild(){
+
+ showIllustration("minecraftPhoto","minecraftWarmCanvas");
+
+ $("minecraftLabel").textContent="Block-building demo";
+
+ if(minecraftBlocks<5){
+
+  minecraftBlocks++;
+
+  blockAnimation=performance.now()/1000;
+
+ }
+
+ minecraftExplored=true;
+
+ $("minecraftFeedback").textContent=
+  minecraftBlocks===5
+  ?"Your tower is complete!"
+  :"You added a digital block.";
+
+ checkGameExploration();
+
+}
+
+function minecraftRemove(){
+
+ showIllustration("minecraftPhoto","minecraftWarmCanvas");
+
+ $("minecraftLabel").textContent="Block-building demo";
+
+ if(minecraftBlocks>0)minecraftBlocks--;
+
+ minecraftExplored=true;
+
+ $("minecraftFeedback").textContent=
+  minecraftBlocks===0
+  ?"Try adding a block to start building."
+  :"You changed the world by removing a block.";
+
+ checkGameExploration();
+
+}
+
+function worldGuess(button,correct){
+
+ markChoice(button);
+
+ if(correct){
+
+  button.classList.add("correct");
+
+  $("worldFeedback").textContent=
+   "Exactly! Both have worlds made by computers.";
+
+  $("worldConnection").classList.remove("hidden");
+
+  confetti();
+
+ }else{
+
+  button.classList.add("wrong");
+
+  $("worldFeedback").textContent=
+   "Think about the blocks and characters. Are they digital?";
+
+ }
+
+}
+
+function drawBlockCharacter(ctx,x,y,s,t){
+
+ ctx.save();
+
+ ctx.translate(x,y);
+ ctx.scale(s,s);
+
+ roundRect(ctx,-23,32,19,43,3,"#343D67");
+ roundRect(ctx,4,32,19,43,3,"#343D67");
+
+ roundRect(ctx,-30,-28,60,65,4,"#5E48C4");
+
+ polygon(ctx,[
+  [30,-28],[44,-37],[44,27],[30,37]
+ ],"#39298E");
+
+ roundRect(ctx,-50,-27,17,62,3,"#FFD071");
+ roundRect(ctx,47,-35,17,62,3,"#FFD071");
+
+ roundRect(ctx,-24,-79,48,48,6,"#FFD071");
+
+ polygon(ctx,[
+  [-24,-79],[-9,-90],[39,-90],[24,-79]
+ ],"#FFE4A4");
+
+ polygon(ctx,[
+  [24,-79],[39,-90],[39,-43],[24,-31]
+ ],"#D7A84E");
+
+ circle(ctx,-9,-60,3,"#242337");
+ circle(ctx,9,-60,3,"#242337");
+
+ ctx.beginPath();
+ ctx.arc(0,-53,10,.2,Math.PI-.2);
+ ctx.strokeStyle="#242337";
+ ctx.lineWidth=2;
+ ctx.stroke();
+
+ ctx.restore();
+
+}
+
+function drawRobloxWarm(t){
+
+ if($("robloxWarmCanvas").classList.contains("hidden"))return;
+
+ const {ctx,w,h}=canvasInfo("robloxWarmCanvas");
+
+ sky(ctx,w,h);
+
+ for(let i=0;i<4;i++){
+
+  ellipse(
+   ctx,w*(.12+i*.3),
+   h*.13+(i%2)*18,
+   30,10,"#FFFFFFBB"
+  );
+
+ }
+
+ const size=Math.min(w*.075,38);
+
+ const colors=[
+
+  ["#FFD071","#E3AD43","#C18A30"],
+  ["#59E4FB","#2FB9D0","#2397AD"],
+  ["#A99AF0","#7B6ED4","#5E48C4"]
+
+ ];
+
+ for(let i=0;i<5;i++){
+
+  const x=w*(.12+i*.19);
+  const y=h*.82-i*h*.07;
+
+  cube(ctx,x,y,size,colors[i%3]);
+
+ }
+
+ robloxVisualPosition+=
+  (robloxPosition-robloxVisualPosition)*.12;
+
+ const pos=robloxVisualPosition;
+
+ const jumpTime=t-jumpStarted;
+
+ const jump=jumpTime>=0&&jumpTime<.85
+  ?Math.sin(jumpTime/.85*Math.PI)*h*.25
+  :0;
+
+ const s=Math.min(w/380,h/300);
+
+ const x=w*(.12+pos*.19);
+ const platformY=h*.82-pos*h*.07;
+
+ drawBlockCharacter(
+  ctx,x,
+  platformY-size*.5-75*s-jump,
+  s,t
+ );
+
+}
+
+function drawMinecraftWarm(t){
+
+ if($("minecraftWarmCanvas").classList.contains("hidden"))return;
+
+ const {ctx,w,h}=canvasInfo("minecraftWarmCanvas");
+
+ sky(ctx,w,h);
+
+ const s=Math.min(w/11,h/6);
+
+ for(let row=0;row<4;row++){
+
+  for(let col=0;col<8;col++){
+
+   const x=col*s*1.05-row*s*.55+w*.16;
+   const y=h*.57+row*s*.48;
+
+   cube(ctx,x,y,s*.52,[
+    "#7EC850","#8A6440","#6D4B2F"
+   ]);
+
+  }
+
+ }
+
+ const tx=w*.78;
+ const ty=h*.57;
+
+ cube(ctx,tx,ty,s*.36,[
+  "#A97A4D","#78502E","#593A22"
+ ]);
+
+ cube(ctx,tx,ty-s*.65,s*.36,[
+  "#A97A4D","#78502E","#593A22"
+ ]);
+
+ cube(ctx,tx,ty-s*1.3,s*.85,[
+  "#75B74A","#428A38","#2F6C2C"
+ ]);
+
+ // Interactive block tower
+
+ for(let i=0;i<minecraftBlocks;i++){
+
+  let offset=0;
+
+  if(i===minecraftBlocks-1){
+
+   const p=Math.min(1,Math.max(0,(t-blockAnimation)*3));
+
+   offset=(1-p)*h*.2;
+
+  }
+
+  cube(
+   ctx,w*.43,
+   h*.6-i*s*.65-offset,
+   s*.48,
+   ["#A9ADB4","#7C818A","#575E69"]
+  );
+
+ }
+
+ // Block character
+
+ ctx.save();
+
+ ctx.translate(w*.2,h*.58);
+
+ const k=Math.min(w/400,h/260);
+
+ ctx.scale(k,k);
+
+ roundRect(ctx,-18,20,16,35,0,"#354B9B");
+ roundRect(ctx,2,20,16,35,0,"#354B9B");
+
+ roundRect(ctx,-22,-25,44,45,0,"#24B5BC");
+
+ roundRect(ctx,-36,-25,12,40,0,"#B98760");
+ roundRect(ctx,24,-25,12,40,0,"#B98760");
+
+ roundRect(ctx,-22,-70,44,44,0,"#D1A17A");
+ roundRect(ctx,-22,-70,44,10,0,"#69472E");
+
+ roundRect(ctx,-13,-51,9,5,0,"#FFFFFF");
+ roundRect(ctx,4,-51,9,5,0,"#FFFFFF");
+
+ roundRect(ctx,-9,-51,5,5,0,"#3C4F88");
+ roundRect(ctx,4,-51,5,5,0,"#3C4F88");
+
+ ctx.restore();
+
+}
+
+
+/* =====================================
+   VIRTUAL WORLD DRAWING
+===================================== */
+
+function drawPlanet(ctx,x,y,r){
+
+ const g=ctx.createRadialGradient(
+  x-r*.4,y-r*.4,2,x,y,r
+ );
+
+ g.addColorStop(0,"#E7BFFF");
+ g.addColorStop(.6,"#A390E8");
+ g.addColorStop(1,"#5E48C4");
+
+ circle(ctx,x,y,r,g);
+
+ ctx.save();
+
+ ctx.translate(x,y);
+ ctx.rotate(-.3);
+
+ ctx.beginPath();
+ ctx.ellipse(0,0,r*1.7,r*.32,0,0,TAU);
+ ctx.strokeStyle="#59E4FB";
+ ctx.lineWidth=6;
+ ctx.stroke();
+
+ ctx.restore();
+
+}
+
+function fish(ctx,x,y,s,color){
+
+ ctx.save();
+
+ ctx.translate(x,y);
+ ctx.scale(s,s);
+
+ ellipse(ctx,0,0,27,15,color);
+
+ polygon(ctx,[
+  [-20,0],[-46,-17],[-46,17]
+ ],color);
+
+ circle(ctx,14,-4,4,"white");
+ circle(ctx,15,-4,2,"#242337");
+
+ ctx.restore();
+
+}
+
+function renderWorld(ctx,w,h,t,angle=0,theme="meadow"){
+
+ sky(ctx,w,h,theme);
+
+ const shift=Math.sin(angle)*w*.35;
+
+ if(theme==="space"){
+
+  for(let i=0;i<65;i++){
+
+   const x=((i*127+13)%1000)/1000*w;
+   const y=((i*83+9)%1000)/1000*h*.7;
+
+   ctx.globalAlpha=.6+Math.sin(t*2+i)*.3;
+
+   circle(ctx,x,y,1+(i%3)*.7,"white");
+
+  }
+
+  ctx.globalAlpha=1;
+
+  drawPlanet(ctx,w*.78-shift*.3,h*.23,h*.15);
+
+  polygon(ctx,[
+   [0,h*.77],[w*.25,h*.60],
+   [w*.5,h*.70],[w*.75,h*.55],
+   [w,h*.72],[w,h],[0,h]
+  ],"#7B6ED4");
+
+  ellipse(ctx,w*.2,h*.84,w*.08,h*.04,"#50429F");
+  ellipse(ctx,w*.72,h*.88,w*.1,h*.04,"#50429F");
+
+  robot(
+   ctx,w*.5-shift,h*.76,
+   Math.min(w/800,1),t
+  );
+
+  cube(ctx,w*.3-shift*.8,h*.75,30);
+
+ }else if(theme==="ocean"){
+
+  sceneGround(ctx,w,h,"ocean");
+
+  for(let i=0;i<8;i++){
+
+   const x=((i*137+t*24)%(w+100))-50;
+   const y=h*.18+(i%4)*h*.13;
+
+   fish(
+    ctx,x-shift*.3,y,
+    .6+(i%3)*.2,
+    ["#FFD071","#ED5661","#59E4FB"][i%3]
+   );
+
+  }
+
+  for(let i=0;i<6;i++){
+
+   const x=w*(i+.5)/6-shift*.4;
+
+   for(let j=0;j<3;j++){
+
+    ctx.beginPath();
+
+    ctx.moveTo(x+j*8,h*.9);
+
+    ctx.quadraticCurveTo(
+     x+Math.sin(t+j)*18,h*.75,
+     x+j*12,h*.62
+    );
+
+    ctx.strokeStyle="#2FA77B";
+    ctx.lineWidth=6;
+    ctx.stroke();
+
+   }
+
+  }
+
+  for(let i=0;i<12;i++){
+
+   circle(
+    ctx,(i*79)%w,
+    h-((i*43+t*20)%h),
+    3+(i%3)*2,"#D6FAFF88"
+   );
+
+  }
+
+ }else{
+
+  circle(ctx,w*.82,h*.18,35,"#FFD071");
+
+  for(let i=0;i<4;i++){
+
+   ellipse(
+    ctx,(i*.29+.12)*w-shift*.1,
+    h*.18+(i%2)*23,50,16,"#FFFFFFAA"
+   );
+
+  }
+
+  polygon(ctx,[
+   [0,h*.65],[w*.15,h*.35],
+   [w*.35,h*.66],[w*.55,h*.4],
+   [w*.8,h*.65],[w,h*.42],
+   [w,h],[0,h]
+  ],"#B6D4D8");
+
+  sceneGround(ctx,w,h);
+
+  tree(
+   ctx,w*.17-shift*.6,h*.74,
+   Math.max(.4,w/900)
+  );
+
+  tree(
+   ctx,w*.86-shift*.5,h*.77,
+   Math.max(.45,w/750)
+  );
+
+  house(
+   ctx,w*.48-shift,h*.78,
+   Math.min(w/650,1.2)
+  );
+
+  robot(
+   ctx,w*.7-shift*1.25,h*.81,
+   Math.min(w/850,1),t
+  );
+
+ }
+
+}
+
+
+/* =====================================
+   SLIDE 1: PORTAL
+===================================== */
+
+function drawPortal(t){
+
+ const {ctx,w,h}=canvasInfo("portalCanvas");
+
+ sky(ctx,w,h,"space");
+
+ const cx=w*.5;
+ const cy=h*.49;
+
+ for(let i=9;i>=0;i--){
+
+  const phase=(t*.55+i/10)%1;
+
+  const r=(.13+phase*.9)*Math.min(w,h);
+
+  ctx.beginPath();
+
+  ctx.ellipse(cx,cy,r*.8,r,0,0,TAU);
+
+  ctx.strokeStyle=i%2?"#59E4FB":"#FFD071";
+
+  ctx.globalAlpha=(1-phase)*.7;
+  ctx.lineWidth=3+(1-phase)*6;
+
+  ctx.stroke();
+
+ }
+
+ ctx.globalAlpha=1;
+
+ ctx.save();
+
+ ctx.beginPath();
+
+ ctx.ellipse(cx,cy,w*.19,h*.4,0,0,TAU);
+
+ ctx.clip();
+
+ renderWorld(ctx,w,h,t,t*.2,"meadow");
+
+ ctx.restore();
+
+ for(let i=0;i<30;i++){
+
+  const x=(i*117+t*13)%w;
+  const y=(i*59+t*17)%h;
+
+  circle(ctx,x,y,2+(i%3),"#FFD071");
+
+ }
+
+}
+
+
+/* =====================================
+   SLIDE 5: VR
+===================================== */
+
+let vrAngle=0;
+let vrThemeIndex=0;
+
+const vrThemes=["meadow","space","ocean"];
+
+const vrNames=[
+ "Virtual Forest",
+ "Outer Space",
+ "Underwater World"
+];
+
+function turnVR(dir){
+
+ vrAngle+=dir*.5;
+
+}
+
+function changeVRWorld(){
+
+ vrThemeIndex=(vrThemeIndex+1)%vrThemes.length;
+
+ vrAngle=0;
+
+ $("vrWorldLabel").textContent=vrNames[vrThemeIndex];
+
+}
+
+function drawVR(t){
+
+ const {ctx,w,h}=canvasInfo("vrCanvas");
+
+ renderWorld(
+  ctx,w,h,t,vrAngle,vrThemes[vrThemeIndex]
+ );
+
+ const shade=ctx.createRadialGradient(
+  w/2,h/2,w*.1,w/2,h/2,w*.65
+ );
+
+ shade.addColorStop(0,"#00000000");
+ shade.addColorStop(1,"#19143E55");
+
+ ctx.fillStyle=shade;
+ ctx.fillRect(0,0,w,h);
+
+}
+
+function dragCanvas(id,handler){
+
+ const c=$(id);
+
+ let startX=null;
+
+ c.addEventListener("pointerdown",e=>{
+
+  startX=e.clientX;
+
+  c.setPointerCapture(e.pointerId);
+
+ });
+
+ c.addEventListener("pointermove",e=>{
+
+  if(startX===null)return;
+
+  const dx=e.clientX-startX;
+
+  startX=e.clientX;
+
+  handler(dx,e);
+
+ });
+
+ [
+  "pointerup","pointercancel","lostpointercapture"
+ ].forEach(name=>{
+
+  c.addEventListener(name,()=>startX=null);
+
+ });
+
+}
+
+dragCanvas("vrCanvas",dx=>vrAngle+=dx*.007);
+
+
+/* =====================================
+   SLIDE 6: AR
+===================================== */
+
+let arX=.55;
+let arY=.82;
+let arScale=1;
+let arVisible=true;
+
+function scaleAR(n){
+
+ arScale=Math.max(.45,Math.min(1.8,arScale+n));
+
+}
+
+function toggleAR(){
+
+ arVisible=!arVisible;
+
+ $("arToggle").textContent=
+  arVisible?"Hide Dinosaur":"Show Dinosaur";
+
+}
+
+function resetAR(){
+
+ arX=.55;
+ arY=.82;
+ arScale=1;
+ arVisible=true;
+
+ $("arToggle").textContent="Hide Dinosaur";
+
+}
+
+function drawRoom(ctx,w,h){
+
+ const g=ctx.createLinearGradient(0,0,0,h);
+
+ g.addColorStop(0,"#F1E9DB");
+ g.addColorStop(1,"#D5D0C7");
+
+ ctx.fillStyle=g;
+ ctx.fillRect(0,0,w,h);
+
+ polygon(ctx,[
+  [0,h*.72],[w*.5,h*.56],
+  [w,h*.72],[w,h],[0,h]
+ ],"#BCA990");
+
+ line(ctx,0,h*.72,w*.5,h*.56,"#B1A28C",2);
+ line(ctx,w,h*.72,w*.5,h*.56,"#B1A28C",2);
+
+ roundRect(ctx,w*.09,h*.1,w*.23,h*.42,9,"white");
+
+ roundRect(
+  ctx,w*.105,h*.12,w*.2,h*.38,5,"#9ED9ED"
+ );
+
+ line(ctx,w*.205,h*.12,w*.205,h*.5,"white",6);
+ line(ctx,w*.105,h*.31,w*.305,h*.31,"white",6);
+
+ roundRect(
+  ctx,w*.7,h*.42,w*.24,h*.29,15,"#B7B1DA"
+ );
+
+ roundRect(
+  ctx,w*.68,h*.59,w*.28,h*.15,10,"#948BC7"
+ );
+
+ ellipse(
+  ctx,w*.5,h*.85,w*.24,h*.1,"#A8957C"
+ );
+
+}
+
+function drawAR(t){
+
+ const {ctx,w,h}=canvasInfo("arCanvas");
+
+ drawRoom(ctx,w,h);
+
+ if(arVisible){
+
+  const s=Math.min(w/650,h/240,1.1)*arScale;
+
+  dinosaur(ctx,w*arX,h*arY,s,t);
+
+ }
+
+}
+
+dragCanvas("arCanvas",(dx,e)=>{
+
+ if(!arVisible)return;
+
+ const r=$("arCanvas").getBoundingClientRect();
+
+ arX=Math.max(.13,Math.min(.88,arX+dx/r.width));
+
+ arY=Math.max(
+  .65,Math.min(.95,(e.clientY-r.top)/r.height)
+ );
+
+});
+
+
+/* =====================================
+   SLIDE 7: AR VR QUIZ
+===================================== */
+
+const modeQuestions=[
+
+ {
+  q:"A dinosaur appears in your room through a tablet.",
+  a:"AR",
+  scene:"dinosaur",
+  explanation:"AR adds digital things to the real world."
+ },
+
+ {
+  q:"You wear a headset and explore another planet.",
+  a:"VR",
+  scene:"space",
+  explanation:"VR takes you inside a computer-made world."
+ },
+
+ {
+  q:"A camera filter adds animal ears to your face.",
+  a:"AR",
+  scene:"filter",
+  explanation:"Your real face is still there. The ears are digital!"
+ }
+
+];
+
+let modeIndex=0;
+let modeAnswered=false;
+let modeFinished=false;
+let quizScore=0;
+
+function answerMode(answer,button){
+
+ if(modeAnswered||modeFinished)return;
+
+ modeAnswered=true;
+
+ const question=modeQuestions[modeIndex];
+
+ const correct=answer===question.a;
+
+ document.querySelectorAll(".quizOptions button")
+ .forEach(b=>{
+
+  b.disabled=true;
+
+  if(b.textContent.trim()===question.a){
+
+   b.classList.add("correct");
+
+  }
+
+ });
+
+ if(correct){
+
+  quizScore++;
+  confetti();
+
+ }else{
+
+  button.classList.add("wrong");
+
+ }
+
+ $("arvrFeedback").textContent=correct
+
+  ?"Correct! "+question.explanation
+
+  :"It's "+question.a+"! "+question.explanation;
+
+ $("arvrNext").textContent=
+
+  modeIndex===modeQuestions.length-1
+
+  ?"Complete Challenge"
+
+  :"Next Challenge →";
+
+ $("arvrNext").classList.remove("hidden");
+
+}
+
+function nextModeQuestion(){
+
+ if(!modeAnswered||modeFinished)return;
+
+ const progress=document.querySelectorAll(
+  "#quizProgress span"
+ );
+
+ progress[modeIndex].classList.remove("active");
+ progress[modeIndex].classList.add("completed");
+
+ if(modeIndex===modeQuestions.length-1){
+
+  modeFinished=true;
+
+  $("arvrFeedback").textContent=
+   quizScore+" / "+modeQuestions.length+
+   " correct! Let's explore our own 3D world.";
+
+  $("arvrNext").textContent="Meet Delightex Edu →";
+
+  $("arvrNext").onclick=nextSlide;
+
+  if(quizScore===modeQuestions.length)confetti();
+
+  return;
+
+ }
+
+ modeIndex++;
+ modeAnswered=false;
+
+ progress[modeIndex].classList.add("active");
+
+ $("arvrQuestion").textContent=
+  modeQuestions[modeIndex].q;
+
+ $("arvrFeedback").textContent="";
+
+ document.querySelectorAll(".quizOptions button")
+ .forEach(b=>{
+
+  b.disabled=false;
+  b.classList.remove("correct","wrong");
+
+ });
+
+ $("arvrNext").classList.add("hidden");
+
+}
+
+function drawScenario(t){
+
+ const {ctx,w,h}=canvasInfo("scenarioCanvas");
+
+ const type=modeQuestions[modeIndex].scene;
+
+ if(type==="dinosaur"){
+
+  drawRoom(ctx,w,h);
+
+  const tw=w*.47;
+  const th=h*.82;
+
+  const tx=(w-tw)/2;
+  const ty=h*.08;
+
+  roundRect(ctx,tx,ty,tw,th,18,"#242337");
+
+  ctx.save();
+
+  ctx.beginPath();
+
+  ctx.roundRect(tx+10,ty+10,tw-20,th-20,9);
+
+  ctx.clip();
+
+  drawRoom(ctx,w,h);
+
+  dinosaur(
+   ctx,w*.5,h*.76,
+   Math.min(w/650,h/240)*.85,t
+  );
+
+  ctx.restore();
+
+  circle(ctx,w*.5,ty+th-5,2,"white");
+
+ }else if(type==="space"){
+
+  renderWorld(ctx,w,h,t,t*.12,"space");
+
+  const shade=ctx.createRadialGradient(
+   w/2,h/2,h*.15,w/2,h/2,w*.65
+  );
+
+  shade.addColorStop(0,"#00000000");
+  shade.addColorStop(1,"#000000BB");
+
+  ctx.fillStyle=shade;
+  ctx.fillRect(0,0,w,h);
+
+ }else if(type==="filter"){
+
+  sky(ctx,w,h);
+
+  const phoneW=Math.min(w*.45,h*.65);
+  const phoneH=h*.92;
+
+  const px=(w-phoneW)/2;
+  const py=h*.04;
+
+  roundRect(ctx,px,py,phoneW,phoneH,20,"#242337");
+
+  roundRect(
+   ctx,px+9,py+10,
+   phoneW-18,phoneH-20,13,"#C8DCEB"
+  );
+
+  ctx.save();
+
+  ctx.beginPath();
+
+  ctx.roundRect(
+   px+9,py+10,phoneW-18,phoneH-20,13
+  );
+
+  ctx.clip();
+
+  drawFilterFace(
+   ctx,w*.5,h*.47,
+   Math.min(phoneW/180,h/300),
+   t,
+   Math.sin(t*1.8)>-.6?"cat":"none"
+  );
+
+  ctx.restore();
+
+  circle(ctx,w*.5,h*.89,12,"white");
+
+ }
+
+}
+
+
+/* =====================================
+   SLIDE 8: PLATFORM
+===================================== */
+
+function drawPlatform(t,elapsed){
+
+ const {ctx,w,h}=canvasInfo("platformCanvas");
+
+ sky(ctx,w,h);
+ sceneGround(ctx,w,h);
+
+ const progress=Math.min(5,elapsed*.8);
+
+ function drop(draw,threshold){
+
+  if(progress<threshold)return;
+
+  const p=Math.min(1,(progress-threshold)*3);
+
+  ctx.save();
+
+  ctx.translate(0,-(1-p)*h*.35);
+
+  ctx.globalAlpha=p;
+
+  draw();
+
+  ctx.restore();
+
+ }
+
+ drop(()=>{
+
+  tree(ctx,w*.2,h*.8,Math.min(w/900,.8));
+
+ },.15);
+
+ drop(()=>{
+
+  house(ctx,w*.49,h*.82,Math.min(w/650,1));
+
+ },.8);
+
+ drop(()=>{
+
+  robot(ctx,w*.73,h*.81,Math.min(w/750,1),t);
+
+ },1.5);
+
+ drop(()=>{
+
+  cube(ctx,w*.36,h*.78,Math.min(w/20,42));
+
+ },2.2);
+
+ drop(()=>{
+
+  dinosaur(
+   ctx,w*.87,h*.85,Math.min(w/850,.65),t
+  );
+
+ },2.9);
+
+}
+
+
+/* =====================================
+   SLIDE 9: WORKSPACE
+===================================== */
+
+let workspaceObjects=[];
+let workspaceTool="move";
+let workspaceSelected=-1;
+
+function addWorkspaceObject(type){
+
+ workspaceObjects.push({
+
+  type,
+  x:.3+Math.random()*.4,
+  y:.77,
+  size:1,
+  rotation:0
+
+ });
+
+ workspaceSelected=workspaceObjects.length-1;
+
+ $("workspaceFeedback").textContent=
+  "Try moving, turning or resizing it.";
+
+}
+
+function setWorkspaceTool(tool){
+
+ workspaceTool=tool;
+
+ document.querySelectorAll(
+  "#toolMove,#toolRotate,#toolScale"
+ ).forEach(b=>b.classList.remove("selected"));
+
+ $("tool"+tool[0].toUpperCase()+tool.slice(1))
+ .classList.add("selected");
+
+ $("workspaceFeedback").textContent={
+
+  move:"Drag the object to move it.",
+
+  rotate:"Drag left or right to turn the object.",
+
+  scale:"Drag right to make it bigger. Drag left to make it smaller."
+
+ }[tool];
+
+}
+
+function resetWorkspace(){
+
+ workspaceObjects=[];
+ workspaceSelected=-1;
+
+ setWorkspaceTool("move");
+
+ $("workspaceFeedback").textContent=
+  "Choose a 3D object to add!";
+
+}
+
+function drawWorkspace(){
+
+ const {ctx,w,h}=canvasInfo("workspaceCanvas");
+
+ sky(ctx,w,h);
+ sceneGround(ctx,w,h);
+
+ for(let i=0;i<9;i++){
+
+  line(
+   ctx,w*.5,h*.65,i*w/8,h,"#FFFFFF60",1
+  );
+
+ }
+
+ for(let i=1;i<5;i++){
+
+  const y=h*.65+h*.35*(i/5)**1.6;
+
+  line(ctx,0,y,w,y,"#FFFFFF60",1);
+
+ }
+
+ workspaceObjects.forEach((o,i)=>{
+
+  const x=o.x*w;
+  const y=o.y*h;
+
+  ctx.save();
+
+  ctx.translate(x,y);
+  ctx.rotate(o.rotation);
+
+  if(o.type==="tree"){
+
+   tree(ctx,0,0,Math.min(w/700,1)*o.size);
+
+  }else if(o.type==="cube"){
+
+   cube(ctx,0,0,Math.min(w/16,38)*o.size);
+
+  }else{
+
+   const r=Math.min(w/11,42)*o.size;
+
+   const g=ctx.createRadialGradient(
+    -r*.3,-r*.3,2,0,0,r
+   );
+
+   g.addColorStop(0,"#FFF5BE");
+   g.addColorStop(1,"#ED5661");
+
+   circle(ctx,0,0,r,g);
+
+  }
+
+  ctx.restore();
+
+  if(i===workspaceSelected){
+
+   const boxW=92*o.size;
+   const boxH=105*o.size;
+
+   ctx.strokeStyle="#ED5661";
+   ctx.lineWidth=2;
+   ctx.setLineDash([6,4]);
+
+   ctx.strokeRect(
+    x-boxW/2,y-90*o.size,boxW,boxH
+   );
+
+   ctx.setLineDash([]);
+
+  }
+
+ });
+
+}
+
+let workspaceDrag=null;
+
+const wc=$("workspaceCanvas");
+
+wc.addEventListener("pointerdown",e=>{
+
+ const r=wc.getBoundingClientRect();
+
+ const x=(e.clientX-r.left)/r.width;
+ const y=(e.clientY-r.top)/r.height;
+
+ let closest=-1;
+ let dist=Infinity;
+
+ workspaceObjects.forEach((o,i)=>{
+
+  const centerY=o.type==="tree"?o.y-.12:o.y;
+
+  const d=Math.hypot(o.x-x,centerY-y);
+
+  if(d<dist){
+
+   dist=d;
+   closest=i;
+
+  }
+
+ });
+
+ if(dist<.3){
+
+  workspaceSelected=closest;
+
+  workspaceDrag={
+   x:e.clientX,
+   y:e.clientY
+  };
+
+  wc.setPointerCapture(e.pointerId);
+
+ }else{
+
+  workspaceSelected=-1;
+
+ }
+
+});
+
+wc.addEventListener("pointermove",e=>{
+
+ if(!workspaceDrag||workspaceSelected<0)return;
+
+ const r=wc.getBoundingClientRect();
+
+ const o=workspaceObjects[workspaceSelected];
+
+ const dx=e.clientX-workspaceDrag.x;
+ const dy=e.clientY-workspaceDrag.y;
+
+ if(workspaceTool==="move"){
+
+  o.x=Math.max(.1,Math.min(.9,o.x+dx/r.width));
+
+  o.y=Math.max(.58,Math.min(.95,o.y+dy/r.height));
+
+ }else if(workspaceTool==="rotate"){
+
+  o.rotation+=dx*.015;
+
+ }else{
+
+  o.size=Math.max(.4,Math.min(2.5,o.size+dx*.008));
+
+ }
+
+ workspaceDrag={
+  x:e.clientX,
+  y:e.clientY
+ };
+
+});
+
+[
+ "pointerup","pointercancel","lostpointercapture"
+].forEach(n=>{
+
+ wc.addEventListener(n,()=>workspaceDrag=null);
+
+});
+
+
+/* =====================================
+   SLIDES 10 AND 11: ABOUT ME
+===================================== */
+
+function drawAbout(t,id="aboutCanvas"){
+
+ const {ctx,w,h}=canvasInfo(id);
+
+ sky(ctx,w,h);
+ sceneGround(ctx,w,h);
+
+ tree(
+  ctx,w*.15,h*.79,Math.min(w/900,h/230,.9)
+ );
+
+ house(
+  ctx,w*.47,h*.81,Math.min(w/650,h/220,1.05)
+ );
+
+ robot(
+  ctx,w*.74,h*.82,Math.min(w/800,h/240,.9),t
+ );
+
+}
+
+let exploreCelebrated=false;
+
+function checkExplore(){
+
+ const boxes=[
+  ...$("exploreTasks").querySelectorAll("input")
+ ];
+
+ const done=boxes.filter(b=>b.checked).length;
+
+ $("exploreFeedback").textContent=
+  done+" of 4 missions completed";
+
+ if(done===4&&!exploreCelebrated){
+
+  exploreCelebrated=true;
+
+  $("exploreFeedback").textContent=
+   "All explorer missions complete!";
+
+  confetti();
+
+ }
+
+}
+
+
+/* =====================================
+   SLIDE 12: FINAL
+===================================== */
+
+function drawFinal(t){
+
+ const {ctx,w,h}=canvasInfo("finalCanvas");
+
+ sky(ctx,w,h,"space");
+
+ const cx=w*.5;
+ const cy=h*.48;
+
+ for(let i=0;i<5;i++){
+
+  const r=45+i*19+Math.sin(t*2+i)*4;
+
+  ctx.beginPath();
+
+  ctx.ellipse(cx,cy,r,r*.7,0,0,TAU);
+
+  ctx.strokeStyle=i%2?"#59E4FB":"#FFD071";
+  ctx.lineWidth=4;
+  ctx.stroke();
+
+ }
+
+ robot(ctx,cx,cy+50,Math.min(w/500,1.1),t);
+
+ for(let i=0;i<18;i++){
+
+  circle(
+   ctx,(i*117+t*15)%w,
+   (i*71)%h,2+(i%3),"#FFD071"
+  );
+
+ }
+
+}
+
+let finalCelebrated=false;
+
+function checkFinal(){
+
+ const boxes=[
+  ...$("finalTasks").querySelectorAll("input")
+ ];
+
+ const done=boxes.filter(b=>b.checked).length;
+
+ $("finalFeedback").textContent=
+  done+" of 4 missions complete";
+
+ if(done===4&&!finalCelebrated){
+
+  finalCelebrated=true;
+
+  $("finalFeedback").textContent=
+   "Amazing! All missions complete!";
+
+  confetti();
+
+ }
+
+}
+
+function finishLesson(){
+
+ const boxes=[
+  ...$("finalTasks").querySelectorAll("input")
+ ];
+
+ if(boxes.every(b=>b.checked)){
+
+  $("finalFeedback").textContent=
+   "Mission Complete! You're a 3D Explorer!";
+
+  confetti();
+
+ }else{
+
+  $("finalFeedback").textContent=
+   "Complete your missions first!";
+
+ }
+
+}
+
+
+/* =====================================
+   ANIMATION LOOP
+===================================== */
+
+function animate(ms){
+
+ const t=ms/1000;
+
+ const elapsed=(ms-slideStarted)/1000;
+
+ switch(current){
+
+  case 1:
+   drawPortal(t);
+   break;
+
+  case 2:
+   drawHeadsetWarm(t);
+   drawFilterWarm(t);
+   break;
+
+  case 3:
+   drawRobloxWarm(t);
+   drawMinecraftWarm(t);
+   break;
+
+  case 4:
+   // Video
+   break;
+
+  case 5:
+   drawVR(t);
+   break;
+
+  case 6:
+   drawAR(t);
+   break;
+
+  case 7:
+   drawScenario(t);
+   break;
+
+  case 8:
+   drawPlatform(t,elapsed);
+   break;
+
+  case 9:
+   drawWorkspace();
+   break;
+
+  case 10:
+   drawAbout(t);
+   break;
+
+  case 11:
+   drawAbout(t,"exploreCanvas");
+   break;
+
+  case 12:
+   drawFinal(t);
+   break;
+
+ }
+
+ requestAnimationFrame(animate);
+
+}
+
+showSlide(1);
+
+requestAnimationFrame(animate);
+
+</script>
+
+</body>
+</html>
